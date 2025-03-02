@@ -20,7 +20,7 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 - 🔹Master level exp is not being displayed in the log
 
 ## 📷 Images
-![Hunting Log UI](assets/images/huntinglog-2.png)
+![Hunting Log UI](assets/images/huntinglog-2.jpg)
 
 ![EXP Tracking](assets/images/huntinglog.png)
 
