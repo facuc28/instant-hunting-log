@@ -18,6 +18,7 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 ## 🚩 Known-Issues
 - 🔹The hunting log UI is not properly aligned when using different resolutions
 - 🔹Master level exp is not being displayed in the log
+- 🔹Once the hunting log is opened it can't be closed (Fix on going)
 
 ## 📷 Images
 ![Hunting Log UI](assets/images/huntinglog-2.jpg)
