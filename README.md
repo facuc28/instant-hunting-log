@@ -60,4 +60,52 @@ The server communicates with the client using **a custom packet format** (`HUNTI
 | 20 | `DWORD` | **Time (seconds) to reset level (350)** |
 
 ### 🔹 Example Packet Data
+```
+Packet Name: HUNTING_LOG_PACKET-Player123
+[0]   = 250000  (EXP per minute)
+[4]   = 5000    (Last EXP received)
+[8]   = 2       (Levels gained)
+[12]  = 1200    (Time in seconds to next level)
+[16]  = 54000   (Time in seconds to max level)
+[20]  = 36000   (Time in seconds to reset level)
+```
+## 🔧 Installation
+ 
+### Server-Side (GameServer)
+- 🔹 Copy InstantHuntingLog.lua to:
+```
+..\KG_Data\Scripts\Systems\InstantHuntingLog.lua
+```
+- 🔹 Restart the GameServer.
 
+### Client-Side (Game Client)
+- 🔹 Copy the following scripts to:
+```
+..\Data\KGData\Lua\Manager\Interface\HuntingLog.lua
+..\Data\KGData\Lua\Manager\Interface\UIFramework.lua
+```
+- 🔹 Restart the Game Client.
+
+## 🛠 How to Contribute
+We welcome contributions! Please follow these steps:
+
+### 📂 Fork & Clone
+- 🔹 Fork this repository.
+- 🔹 Clone your fork locally:
+```
+git clone https://github.com/YOUR_USERNAME/instant-hunting-log
+```
+- 🔹 cd InstantHuntingLog
+
+### 📝 Make Changes
+- 🔹 Modify the Lua scripts inside Scripts/Systems (server-side) or Lua/Manager/Interface (client-side).
+- 🔹 Test your changes in Mu Online Game Server.
+
+### Create a Pull Request
+- 🔹 Push your changes to your fork:
+```
+git add .
+git commit -m "Improved EXP calculation"
+git push origin main
+```
+- 🔹 Open a Pull Request on the repository.
