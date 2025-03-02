@@ -14,9 +14,9 @@ function HuntingLog.Render()
     if not isHuntingLogVisible then return end
 
     local screenWidth = ReturnWideScreenX()
-    local posX = 780 - screenWidth
+    local posX = 900 - screenWidth
     local posY = 400
-    local boxWidth = 140
+    local boxWidth = 150
     local boxHeight = 100
     local lineHeight = 10
 

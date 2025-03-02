@@ -15,6 +15,17 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 
 ---
 
+## 🚩 Known-Issues
+- 🔹The hunting log UI is not properly aligned when using different resolutions
+- 🔹Master level exp is not being displayed in the log
+
+## 📷 Images
+
+![Hunting Log UI](https://i.ibb.co/gb63xGCY/Screen-03-02-01-53-0000.jpg)
+
+![EXP Tracking](https://i.ibb.co/b5TVztyL/huntinglog.png)
+
+
 ## 🏗 How It Works
 
 The **Instant Hunting Log** is implemented using **Lua scripts** that interact with the **Mu Online** server and client.
