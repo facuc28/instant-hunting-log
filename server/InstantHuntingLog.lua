@@ -1,5 +1,6 @@
 HUNTING_LOG_PACKET = 0xF3
 HUNTING_LOG_PACKET_NAME = "HUNTING_LOG_PACKET-%s"
+HUNTING_LOG_TOGGLE_PACKET = 0xF4
 
 local autoCloseTime = 17 -- Close automatically after x seconds of not attacking
 local huntingLogs = {}
@@ -17,6 +18,7 @@ function UpdateHuntingLog(aIndex)
     if not huntingLogs[aIndex] then
         huntingLogs[aIndex] = {
             startTime = os.time(),
+            sessionStartTime = os.time(),
             lastExp = ToBigInt(player:getExp()),
             expAccumulator = 0,
             nextLevelSeconds = 0,
@@ -84,6 +86,7 @@ function UpdateHuntingLog(aIndex)
         SetDwordPacket(packetName, logData.nextLevelSeconds) -- Byte offset 12
         SetDwordPacket(packetName, logData.maxLevelSeconds) -- Byte offset 16
         SetDwordPacket(packetName, logData.resetLevelSeconds) -- Byte offset 20
+        SetDwordPacket(packetName, logData.sessionStartTime) -- Byte offset 24
         SendPacket(packetName, aIndex)
         ClearPacket(packetName)
     end
@@ -93,6 +96,7 @@ function ResetLog(aIndex, startLevel)
     if huntingLogs[aIndex] then
         huntingLogs[aIndex] = {
             startTime = os.time(),
+            sessionStartTime = os.time(),
             lastExp = ToBigInt(0),
             expAccumulator = 0,
             nextLevelSeconds = 0,
