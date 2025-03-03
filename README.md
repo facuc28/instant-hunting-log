@@ -32,17 +32,17 @@ The **Instant Hunting Log** is implemented using **Lua scripts** that interact w
 
 ### 🖥 Server-Side (GameServer)
 
-1. **Tracks EXP Gains**: The server tracks the player's experience **each time a monster dies**.
-2. **Accumulates EXP Per Minute**: Every **60 seconds**, the script records **total EXP gained per minute**.
-3. **Calculates Next Level Time**: Based on **EXP gain rate**, the script estimates the **time remaining** until the **next level**, **reset level (350)**, and **max level (400)**.
-4. **Sends Data to Client**: The server sends **EXP per minute, last EXP gained, levels gained, and time until next level** through a **custom packet**.
+- 🔹**Tracks EXP Gains**: The server tracks the player's experience **each time a monster dies**.
+- 🔹**Accumulates EXP Per Minute**: Every **60 seconds**, the script records **total EXP gained per minute**.
+- 🔹**Calculates Next Level Time**: Based on **EXP gain rate**, the script estimates the **time remaining** until the **next level**, **reset level (350)**, and **max level (400)**.
+- 🔹**Sends Data to Client**: The server sends **EXP per minute, last EXP gained, levels gained, and time until next level** through a **custom packet**.
 
 ### 🎮 Client-Side (Game Client)
 
-1. **Receives EXP Data**: The game client listens for incoming **EXP data packets** from the server.
-2. **Processes the Packet Data**: Extracts **EXP per minute**, **last EXP received**, **level-ups**, and **next level time**.
-3. **Displays HUD**: The information is rendered **in a sleek, professional UI** using a **custom UI framework**.
-4. **Auto-hide Feature**: The UI automatically hides when the **EXP per minute is zero**, ensuring a **clean interface**.
+- 🔹**Receives EXP Data**: The game client listens for incoming **EXP data packets** from the server.
+- 🔹**Processes the Packet Data**: Extracts **EXP per minute**, **last EXP received**, **level-ups**, and **next level time**.
+- 🔹**Displays HUD**: The information is rendered **in a sleek, professional UI** using a **custom UI framework**.
+- 🔹**Auto-hide Feature**: The UI automatically hides when the **EXP per minute is zero**, ensuring a **clean interface**.
 
 ---
 
@@ -72,40 +72,40 @@ Packet Name: HUNTING_LOG_PACKET-Player123
 ## 🔧 Installation
  
 ### Server-Side (GameServer)
-- 🔹 Copy InstantHuntingLog.lua to:
+1. Copy InstantHuntingLog.lua to:
 ```
 ..\KG_Data\Scripts\Systems\InstantHuntingLog.lua
 ```
-- 🔹 Restart the GameServer.
+2. Restart the GameServer.
 
 ### Client-Side (Game Client)
-- 🔹 Copy the following scripts to:
+1. Copy the following scripts to:
 ```
 ..\Data\KGData\Lua\Manager\Interface\HuntingLog.lua
 ..\Data\KGData\Lua\Manager\Interface\UIFramework.lua
 ```
-- 🔹 Restart the Game Client.
+2. Restart the Game Client.
 
 ## 🛠 How to Contribute
 We welcome contributions! Please follow these steps:
 
 ### 📂 Fork & Clone
-- 🔹 Fork this repository.
-- 🔹 Clone your fork locally:
-```
+1. Fork this repository.
+2. Clone your fork locally `
 git clone https://github.com/YOUR_USERNAME/instant-hunting-log
-```
-- 🔹 cd InstantHuntingLog
+` (replace YOUR_USERNAME with your Github username)
+3. cd InstantHuntingLog
 
 ### 📝 Make Changes
-- 🔹 Modify the Lua scripts inside Scripts/Systems (server-side) or Lua/Manager/Interface (client-side).
-- 🔹 Test your changes in Mu Online Game Server.
+1. Modify the Lua scripts inside the server or client folders.
+2. Test your changes in your Mu Online Game Server Locally.
 
 ### Create a Pull Request
-- 🔹 Push your changes to your fork:
+1. Push your changes to your fork:
 ```
 git add .
 git commit -m "Improved EXP calculation"
 git push origin main
 ```
-- 🔹 Open a Pull Request on the repository.
+2. Open a Pull Request on the repository.
+3. Make sure to include pictures or videos of the new working changes as well as a description of the changes the PR introduces

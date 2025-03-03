@@ -1,6 +1,7 @@
 HUNTING_LOG_PACKET = 0xF3
 HUNTING_LOG_PACKET_NAME = "HUNTING_LOG_PACKET-%s"
 
+local autoCloseTime = 17 -- Close automatically after x seconds of not attacking
 local huntingLogs = {}
 
 function ToBigInt(value)
@@ -17,13 +18,15 @@ function UpdateHuntingLog(aIndex)
         huntingLogs[aIndex] = {
             startTime = os.time(),
             lastExp = ToBigInt(player:getExp()),
-            expAccumulator = 0, 
+            expAccumulator = 0,
             nextLevelSeconds = 0,
             resetLevelSeconds = 0,
             maxLevelSeconds = 0,
             lastUpdate = os.time(),
             totalExpPerMin = 0,
-            startLevel = player:getLevel()
+            startLevel = player:getLevel(),
+            lastKillTime = 0,
+            isActive = false
         }
     end
 
@@ -37,7 +40,14 @@ function UpdateHuntingLog(aIndex)
     local lastExpFixed = ToBigInt(logData.lastExp)
     local gainedExp = currentExp - lastExpFixed
     logData.expAccumulator = logData.expAccumulator + gainedExp
-    
+
+    if  logData.lastKillTime ~= 0 and os.time() - logData.lastKillTime >= autoCloseTime then
+        ResetLog(aIndex, player:getLevel())
+        logData = huntingLogs[aIndex]
+    elseif logData.lastKillTime ~= 0 then
+        logData.isActive = true
+    end
+
     if logData.expAccumulator > 0 then
         local remainingExp = nextExpThreshold - currentExp
         local experience = logData.totalExpPerMin > 0 and logData.totalExpPerMin or logData.expAccumulator
@@ -54,43 +64,56 @@ function UpdateHuntingLog(aIndex)
     if elapsedTime >= 60 then
         logData.totalExpPerMin = logData.expAccumulator
         logData.expAccumulator = 0
+        logData.dpm = logData.damageAccumulator
+        logData.damageAccumulator = 0
         logData.startTime = os.time()
     end
 
     logData.lastUpdate = currentTime
     logData.lastExp = currentExp
     
-    if logData.expAccumulator > 0 then
+    if logData.isActive then
         local packetName = string.format(HUNTING_LOG_PACKET_NAME, GetNameObject(aIndex))
         local exp = (logData.totalExpPerMin == 0) and logData.expAccumulator or logData.totalExpPerMin
         local gainedLevels = (player:getLevel() - logData.startLevel) or 0
         
         CreatePacket(packetName, HUNTING_LOG_PACKET)
-        SetDwordPacket(packetName, exp)  -- Byte offset 0
-        SetDwordPacket(packetName, gainedExp)  -- Byte offset 4
-        SetDwordPacket(packetName, gainedLevels)  -- Byte offset 8
-        SetDwordPacket(packetName, logData.nextLevelSeconds)  -- Byte offset 12
-        SetDwordPacket(packetName, logData.maxLevelSeconds)  -- Byte offset 16
-        SetDwordPacket(packetName, logData.resetLevelSeconds)  -- Byte offset 20
+        SetDwordPacket(packetName, exp) -- Byte offset 0
+        SetDwordPacket(packetName, gainedExp) -- Byte offset 4
+        SetDwordPacket(packetName, gainedLevels) -- Byte offset 8
+        SetDwordPacket(packetName, logData.nextLevelSeconds) -- Byte offset 12
+        SetDwordPacket(packetName, logData.maxLevelSeconds) -- Byte offset 16
+        SetDwordPacket(packetName, logData.resetLevelSeconds) -- Byte offset 20
         SendPacket(packetName, aIndex)
         ClearPacket(packetName)
     end
 end
 
-function StartTracking(aIndex)
-    local player = User.new(aIndex)
-    huntingLogs[aIndex] = {
-        startTime = os.time(),
-        lastExp = ToBigInt(player:getExp()),
-        expAccumulator = 0,
-        nextLevelSeconds = 0,
-        resetLevelSeconds = 0,
-        maxLevelSeconds = 0,
-        lastUpdate = os.time(),
-        totalExpPerMin = 0,
-        startLevel = player:getLevel()
-    }
+function ResetLog(aIndex, startLevel)
+    if huntingLogs[aIndex] then
+        huntingLogs[aIndex] = {
+            startTime = os.time(),
+            lastExp = ToBigInt(0),
+            expAccumulator = 0,
+            nextLevelSeconds = 0,
+            resetLevelSeconds = 0,
+            maxLevelSeconds = 0,
+            lastUpdate = os.time(),
+            totalExpPerMin = 0,
+            startLevel = startLevel,
+            lastKillTime = 0,
+            isActive = false
+        }
+    end
+end
+
+function OnMonsterKilled(aIndex)
+    if huntingLogs[aIndex] then
+        huntingLogs[aIndex].lastKillTime = os.time()
+        huntingLogs[aIndex].isActive = true
+    end
 end
 
 GameServerFunctions.MonsterDieGiveItem(UpdateHuntingLog)
-GameServerFunctions.EnterCharacter(StartTracking)
+GameServerFunctions.MonsterDieGiveItem(OnMonsterKilled)
+GameServerFunctions.EnterCharacter(UpdateHuntingLog)

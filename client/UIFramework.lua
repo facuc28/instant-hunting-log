@@ -19,7 +19,7 @@ function UIFramework.CreatePanel(x, y, width, height, bgColor, borderColor, titl
     DrawBar(x + width, y, 1, height, 0.0, 0)          -- Right Border
 
     DisableAlphaBlend()
-    UIFramework.CreateTextLabel(x + 25, y + 5, title, {255,255,255,255}, 2)
+    UIFramework.CreateTextLabel(x + 30, y + 5, title, {255,255,255,255}, 2)
 end
 
 function UIFramework.CreateTextLabel(x, y, text, color, type) 
