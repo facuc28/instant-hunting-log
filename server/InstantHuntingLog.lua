@@ -12,6 +12,19 @@ function ToBigInt(value)
     return value
 end
 
+function GetPlayerExp(player)
+    return player:getLevel() >= 400 and ToBigInt(player:getMasterExperience()) or ToBigInt(player:getExp())
+end
+
+function GetPlayerLevel(player)
+    return player:getLevel() >= 400 and player:getMasterLevel() or player:getLevel()
+end
+
+function GetPlayerNextExp(player)
+    local exp = player:getLevel() >= 400 and LevelExperience(player:getMasterLevel() + player:getMasterLevel()) or player:getNextExp()
+    return ToBigInt(exp)
+end
+
 function UpdateHuntingLog(aIndex)
     local player = User.new(aIndex)
 
@@ -19,14 +32,14 @@ function UpdateHuntingLog(aIndex)
         huntingLogs[aIndex] = {
             startTime = os.time(),
             sessionStartTime = os.time(),
-            lastExp = ToBigInt(player:getExp()),
+            lastExp = GetPlayerExp(player),
             expAccumulator = 0,
             nextLevelSeconds = 0,
             resetLevelSeconds = 0,
             maxLevelSeconds = 0,
             lastUpdate = os.time(),
             totalExpPerMin = 0,
-            startLevel = player:getLevel(),
+            startLevel = GetPlayerLevel(player),
             lastKillTime = 0,
             isActive = false
         }
@@ -35,22 +48,23 @@ function UpdateHuntingLog(aIndex)
     local logData = huntingLogs[aIndex]
     local currentTime = os.time()
     local elapsedTime = currentTime - logData.startTime
-    local currentExp = ToBigInt(player:getExp())
-    local nextExpThreshold = ToBigInt(player:getNextExp())
+    local currentExp = GetPlayerExp(player)
+    local nextExpThreshold = GetPlayerNextExp(player)
     local resetLevelExpThreshold = ToBigInt(LevelExperience(350))
     local maxLevelExpThreshold = ToBigInt(LevelExperience(400))
     local lastExpFixed = ToBigInt(logData.lastExp)
     local gainedExp = currentExp - lastExpFixed
+    local currentLevel = GetPlayerLevel(player)
     logData.expAccumulator = logData.expAccumulator + gainedExp
 
     if  logData.lastKillTime ~= 0 and os.time() - logData.lastKillTime >= autoCloseTime then
-        ResetLog(aIndex, player:getLevel())
+        ResetLog(aIndex, currentLevel)
         logData = huntingLogs[aIndex]
     elseif logData.lastKillTime ~= 0 then
         logData.isActive = true
     end
 
-    if logData.expAccumulator > 0 then
+    if logData.expAccumulator > 0 and player:getLevel() < 400 then
         local remainingExp = nextExpThreshold - currentExp
         local experience = logData.totalExpPerMin > 0 and logData.totalExpPerMin or logData.expAccumulator
         local remainingMaxLevelExp = maxLevelExpThreshold - currentExp
@@ -61,6 +75,8 @@ function UpdateHuntingLog(aIndex)
         logData.maxLevelSeconds = math.max(0, math.ceil((remainingMaxLevelExp * 60) / experience))
     else
         logData.nextLevelSeconds = 0
+        logData.resetLevelSeconds = 0
+        logData.maxLevelSeconds = 0
     end
 
     if elapsedTime >= 60 then
@@ -77,7 +93,7 @@ function UpdateHuntingLog(aIndex)
     if logData.isActive then
         local packetName = string.format(HUNTING_LOG_PACKET_NAME, GetNameObject(aIndex))
         local exp = (logData.totalExpPerMin == 0) and logData.expAccumulator or logData.totalExpPerMin
-        local gainedLevels = (player:getLevel() - logData.startLevel) or 0
+        local gainedLevels = (GetPlayerLevel(player) - logData.startLevel) or 0
         
         CreatePacket(packetName, HUNTING_LOG_PACKET)
         SetDwordPacket(packetName, exp) -- Byte offset 0
