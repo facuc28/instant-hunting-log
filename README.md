@@ -22,7 +22,6 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 
 ## 📷 Images
 ![Hunting Log UI](assets/images/huntinglog-2.jpg)
-
 ![EXP Tracking](assets/images/huntinglog.png)
 
 
