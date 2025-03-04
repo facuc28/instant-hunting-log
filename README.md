@@ -57,6 +57,7 @@ The server communicates with the client using **a custom packet format** (`HUNTI
 | 12 | `DWORD` | **Time (seconds) to next level** |
 | 16 | `DWORD` | **Time (seconds) to max level (400)** |
 | 20 | `DWORD` | **Time (seconds) to reset level (350)** |
+| 24 | `DWORD` | **Time (seconds) since session started** |
 
 ### 🔹 Example Packet Data
 ```
@@ -67,6 +68,7 @@ Packet Name: HUNTING_LOG_PACKET-Player123
 [12]  = 1200    (Time in seconds to next level)
 [16]  = 54000   (Time in seconds to max level)
 [20]  = 36000   (Time in seconds to reset level)
+[24]  = 5000    (Time in seconds since farming started)
 ```
 ## 🔧 Installation
  
