@@ -82,8 +82,6 @@ function UpdateHuntingLog(aIndex)
     if elapsedTime >= 60 then
         logData.totalExpPerMin = logData.expAccumulator
         logData.expAccumulator = 0
-        logData.dpm = logData.damageAccumulator
-        logData.damageAccumulator = 0
         logData.startTime = os.time()
     end
 
