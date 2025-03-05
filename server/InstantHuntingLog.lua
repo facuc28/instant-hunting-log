@@ -1,6 +1,5 @@
 HUNTING_LOG_PACKET = 0xF3
 HUNTING_LOG_PACKET_NAME = "HUNTING_LOG_PACKET-%s"
-HUNTING_LOG_TOGGLE_PACKET = 0xF4
 
 local autoCloseTime = 17 -- Close automatically after x seconds of not attacking
 local huntingLogs = {}
