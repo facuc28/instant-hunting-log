@@ -6,6 +6,7 @@ This file contains the list of changes, improvements, new features and others so
 ### List of Changes
 List item Format: (Date YYYY/MM/DD) - Item description
 
+- 🔹(2025/03/06) - Improve UI Design and extract configurations
 - 🔹(2025/03/06) - Add Minimize/Maximize button in the hunting Log Header
 - 🔹(2025/03/04) - Added new farming session timer
 - 🔹(2025/03/04) - Adjusted fixed position for wide resolutions
