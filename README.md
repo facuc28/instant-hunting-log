@@ -22,8 +22,74 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 
 ## 📷 Images
 ![Hunting Log UI](assets/images/hunting_log_ui.jpg)
+![Hunting Log UI Minimized](assets/images/hunting_log_ui_3.jpg)
 ![EXP Tracking](assets/images/hunting_log_ui_2.png)
 
+
+## Configurations Available
+
+- **panelX**  
+  *Description:* The X position of the Hunting Log panel on the screen.  
+  *Default Value:* `850`
+
+- **panelY**  
+  *Description:* The Y position of the Hunting Log panel on the screen.  
+  *Default Value:* `440`
+
+- **boxWidth**  
+  *Description:* The width of the Hunting Log panel in pixels.  
+  *Default Value:* `160`
+
+- **boxHeight**  
+  *Description:* The height of the Hunting Log panel in pixels when not minimized.  
+  *Default Value:* `115`
+
+- **headerHeight**  
+  *Description:* The height of the header bar (the top portion of the panel) in pixels.  
+  *Default Value:* `20`
+
+## Colors (RGBA)
+- **panelBgColor**  
+  *Description:* The background color of the panel (values from 0.0 to 1.0).  
+  *Default Value:* `{0.0, 0.0, 0.0, 0.8}`
+
+- **panelBorderColor**  
+  *Description:* The border/title bar color of the panel.  
+  *Default Value:* `{0.3, 0.2, 0.2, 1.0}`
+
+- **titleColor**  
+  *Description:* The color used for the title text and the +/- toggle button.  
+  *Default Value:* `{255, 215, 0, 255}`
+
+- **labelColor**  
+  *Description:* The color used for label text (e.g., "Hunting Time:").  
+  *Default Value:* `{230, 230, 230, 255}`
+
+- **valueColor**  
+  *Description:* The color used for numeric values (e.g., "2,274,000").  
+  *Default Value:* `{255, 165, 0, 255}`
+
+## Fonts & Spacing
+- **toggleButtonFontType**  
+  *Description:* The font type used for the +/- toggle button text. (Typically, 0 = normal, 1 = bold, 2 = big, etc.)  
+  *Default Value:* `2`
+
+- **defaultFontType**  
+  *Description:* The default font type used for most label text in the panel.  
+  *Default Value:* `1`
+
+- **lineHeight**  
+  *Description:* The line height in pixels for spacing between rows of text in the panel.  
+  *Default Value:* `11`
+
+## Other Visual Settings
+- **titleText**  
+  *Description:* The text displayed in the panel's title bar.  
+  *Default Value:* `"Instant Hunting Log"`
+
+- **autoHideTime**  
+  *Description:* The time in seconds after which the log auto-hides if no packet is received.  
+  *Default Value:* `17`
 
 ## 🏗 How It Works
 
