@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- InstantHuntingLog.lua
+-- Server side LUA Script that implements the Hunting Log feature for KG Emulator
+--------------------------------------------------------------------------------
+
 HUNTING_LOG_PACKET = 0xF3
 HUNTING_LOG_PACKET_NAME = "HUNTING_LOG_PACKET-%s"
 
