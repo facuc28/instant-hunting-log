@@ -25,9 +25,15 @@ function GetPlayerLevel(player)
 end
 
 function GetPlayerNextExp(player)
-    local exp = player:getLevel() >= 400 and LevelExperience(player:getMasterLevel() + player:getMasterLevel()) or player:getNextExp()
-    return ToBigInt(exp)
+    if player:getLevel() < 400 then
+        return ToBigInt(player:getNextExp())
+    else
+        local masterLevel = player:getMasterLevel()
+        local nextExp = LevelExperience(400 + masterLevel + 1)
+        return ToBigInt(nextExp)
+    end
 end
+
 
 function UpdateHuntingLog(aIndex)
     local player = User.new(aIndex)
