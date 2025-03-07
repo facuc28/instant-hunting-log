@@ -123,6 +123,8 @@ The server communicates with the client using **a custom packet format** (`HUNTI
 | 16 | `DWORD` | **Time (seconds) to max level (400)** |
 | 20 | `DWORD` | **Time (seconds) to reset level (350)** |
 | 24 | `DWORD` | **Time (seconds) since session started** |
+| 28 | `DWORD` | **ZEN per minute** |
+| 32 | `DWORD` | **Last ZEN received** |
 
 ### 🔹 Example Packet Data
 ```
@@ -134,6 +136,8 @@ Packet Name: HUNTING_LOG_PACKET-Player123
 [16]  = 54000   (Time in seconds to max level)
 [20]  = 36000   (Time in seconds to reset level)
 [24]  = 5000    (Time in seconds since farming started)
+[28]  = 120000  (ZEN per minute)
+[32]  = 27000   (Last ZEN received)
 ```
 ## 🔧 Installation
  

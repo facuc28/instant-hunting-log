@@ -6,6 +6,7 @@ This file contains the list of changes, improvements, new features and others so
 ### List of Changes
 List item Format: (Date YYYY/MM/DD) - Item description
 
+- 🔹(2025/03/07) - Add Zen per min and last Zen stats
 - 🔹(2025/03/06) - Implement Drag and Drop to move the Hunting Log by Clicking on it
 - 🔹(2025/03/06) - Improve UI Design and extract configurations
 - 🔹(2025/03/06) - Add Minimize/Maximize button in the hunting Log Header
