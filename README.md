@@ -7,6 +7,7 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 ## 🛠 Features
 
 - 🔹 Displays **EXP per minute**, **last EXP received**, **level-ups**, and **estimated time for next level-ups**.
+- 🔹 Displays **Zen per minute** and **last Zen received**.
 - 🔹 Uses **custom UI framework** to create a **professional-looking HUD**.
 - 🔹 Click and Drag to place the Hunting log where you like it the most
 - 🔹 **Accurate calculations** for **EXP gain & time remaining** for level-ups.
