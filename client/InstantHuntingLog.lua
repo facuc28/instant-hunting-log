@@ -39,16 +39,14 @@ HuntingLogConfigs.labelColor = {230, 230, 230, 255}
 HuntingLogConfigs.valueColor = {255, 165, 0, 255}
 
 -- [Fonts & Spacing]
--- The font type used for the +/- toggle button text
--- 0 = normal, 1 = bold, 2 = big, etc.
+-- The font type used for the +/- toggle button text (0 = normal, 1 = bold, 2 = big, etc.)
 HuntingLogConfigs.toggleButtonFontType = 2
 
--- The default font type used for most label text
+-- The default font type used for most label text in the panel
 HuntingLogConfigs.defaultFontType = 1
 
--- The line height in pixels for spacing between rows of text
+-- The line height in pixels for spacing between rows of text in the panel
 HuntingLogConfigs.lineHeight = 11
-
 
 -- [Other Visual Settings]
 -- The text displayed in the panel's title bar
@@ -63,19 +61,24 @@ HUNTING_LOG_PACKET = 0xF3
 HuntingLog = {}
 
 -------------------------------------------------------------------------------
--- Internal state variables (not in config, because these are logic-related)
+-- Internal state variables (logic-related; not part of the configuration)
 -------------------------------------------------------------------------------
-local expPerMinute       = 0
-local lastExpReceived    = 0
-local levelUpCount       = 0
-local sessionStartTime   = 0
-local nextLevelIn        = "00:00:00"
-local resetLevelIn       = "00:00:00"
-local maxLevelIn         = "00:00:00"
-local sessionTime        = "00:00:00"
-local lastPacketTime     = 0
-local isHuntingLogVisible= false
-local isMinimized        = false
+local expPerMinute        = 0
+local lastExpReceived     = 0
+local levelUpCount        = 0
+local sessionStartTime    = 0
+local nextLevelIn         = "00:00:00"
+local resetLevelIn        = "00:00:00"
+local maxLevelIn          = "00:00:00"
+local sessionTime         = "00:00:00"
+local lastPacketTime      = 0
+local isHuntingLogVisible = false
+local isMinimized         = false
+
+-- Variables for drag functionality
+local isDragging          = false
+local dragOffsetX         = 0
+local dragOffsetY         = 0
 
 -------------------------------------------------------------------------------
 -- RENDER
@@ -88,10 +91,10 @@ function HuntingLog.Render()
     local posX = HuntingLogConfigs.panelX
     local posY = HuntingLogConfigs.panelY
 
-    -- If minimized, only draw the header area
+    -- If minimized, only draw the header area; otherwise, draw the full panel.
     local currentHeight = isMinimized and HuntingLogConfigs.headerHeight or HuntingLogConfigs.boxHeight
 
-    -- Draw the panel (header + possibly body)
+    -- Draw the panel (header plus body if not minimized)
     UIFramework.CreatePanel(
         posX,
         posY,
@@ -102,12 +105,12 @@ function HuntingLog.Render()
         HuntingLogConfigs.titleText
     )
 
+    -- Toggle button is 30% of the panel width
     local buttonWidth  = math.floor(HuntingLogConfigs.boxWidth * 0.3)
     local buttonX      = posX + HuntingLogConfigs.boxWidth - buttonWidth
     local buttonY      = posY
     local buttonText   = isMinimized and "▼" or "▲"
 
-    -- Draw the +/- button text
     UIFramework.CreateTextLabel(
         buttonX + (buttonWidth / 2),
         buttonY + 5,
@@ -118,7 +121,7 @@ function HuntingLog.Render()
         HuntingLogConfigs.panelBorderColor
     )
 
-    -- If minimized, do not draw the stats
+    -- If minimized, do not render stats
     if isMinimized then
         return
     end
@@ -134,31 +137,24 @@ function HuntingLog.Render()
     local sessionSeconds     = sessionElapsedTime % 60
     sessionTime              = string.format("%02d:%02d:%02d", sessionHours, sessionMinutes, sessionSeconds)
 
-    -- Hunting Time
     UIFramework.CreateTextLabel(posX + 10, contentPosY, "Hunting Time:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY, sessionTime, HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Exp. per minute
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight, "Exp. per minute:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY + lineHeight, FormatNumber(expPerMinute), HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Last exp. received
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 2, "Last exp. received:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY + lineHeight * 2, FormatNumber(lastExpReceived), HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Level Ups
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 3, "Level Ups:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY + lineHeight * 3, tostring(levelUpCount), HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Next level in
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 4, "Next level in:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY + lineHeight * 4, nextLevelIn, HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Reset(350) in
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 5, "Reset(350) in:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY + lineHeight * 5, resetLevelIn, HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Max level(400) in
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 6, "Max level(400) in:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 98, contentPosY + lineHeight * 6, maxLevelIn, HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 end
@@ -213,10 +209,10 @@ function HuntingLog.UpdateUI()
 end
 
 -------------------------------------------------------------------------------
--- CLICK CHECK: Disables movement on header click and toggles minimized if +/- button
+-- CLICK CHECK: Handles header clicks for toggling and drag mode initiation/release
 -------------------------------------------------------------------------------
 function HuntingLog.CheckHeaderClick()
-    -- Did the player just left-click?
+    -- Check if the player just left-clicked
     if CheckClickClient() == 1 then
         local mouseX = MousePosX()
         local mouseY = MousePosY()
@@ -227,25 +223,44 @@ function HuntingLog.CheckHeaderClick()
         local headerW = HuntingLogConfigs.boxWidth
         local headerH = HuntingLogConfigs.headerHeight
 
-        -- If user clicked in the header
         if (mouseX >= headerX and mouseX <= (headerX + headerW)) and
            (mouseY >= headerY and mouseY <= (headerY + headerH)) then
 
             -- Prevent character movement
             DisableClickClient()
 
-            -- +/- button bounding box
+            -- Toggle button bounding box (20% of header width)
             local buttonW = math.floor(headerW * 0.2)
             local buttonH = headerH
             local buttonX = headerX + headerW - buttonW
             local buttonY = headerY
 
-            -- If the user clicked on the +/- button, toggle minimized
             if (mouseX >= buttonX and mouseX <= (buttonX + buttonW)) and
                (mouseY >= buttonY and mouseY <= (buttonY + buttonH)) then
+                -- Toggle minimized state if within toggle button area
                 isMinimized = not isMinimized
+            else
+                -- Otherwise, toggle drag mode
+                if isDragging then
+                    isDragging = false
+                else
+                    isDragging = true
+                    dragOffsetX = HuntingLogConfigs.panelX - mouseX
+                    dragOffsetY = HuntingLogConfigs.panelY - mouseY
+                end
             end
         end
+    end
+end
+
+-------------------------------------------------------------------------------
+-- DRAG PANEL: Updates the panel position while in drag mode
+-------------------------------------------------------------------------------
+function HuntingLog.DragPanel()
+    if isDragging then
+        -- Update panel position based on current mouse position plus the initial offset
+        HuntingLogConfigs.panelX = MousePosX() + dragOffsetX
+        HuntingLogConfigs.panelY = MousePosY() + dragOffsetY
     end
 end
 
@@ -267,12 +282,12 @@ end
 function HuntingLog.Init()
     InterfaceController.BeforeMainProc(HuntingLog.Render)
     InterfaceController.ClientProtocol(HuntingLog.Update)
-
-    -- 1) Auto-hide after 'autoHideTime' seconds
+    -- Auto-hide after 'autoHideTime' seconds
     InterfaceController.UpdateProc(HuntingLog.UpdateUI)
-
-    -- 2) Detect header clicks to toggle minimized
+    -- Check for header clicks to toggle minimized state or drag mode
     InterfaceController.UpdateProc(HuntingLog.CheckHeaderClick)
+    -- Continuously update panel position while dragging
+    InterfaceController.UpdateMouse(HuntingLog.DragPanel)
 end
 
 HuntingLog.Init()

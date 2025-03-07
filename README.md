@@ -8,7 +8,7 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 
 - 🔹 Displays **EXP per minute**, **last EXP received**, **level-ups**, and **estimated time for next level-ups**.
 - 🔹 Uses **custom UI framework** to create a **professional-looking HUD**.
-- 🔹 Automatically updates **every 60 seconds** to keep track of the player’s farming efficiency.
+- 🔹 Click and Drag to place the Hunting log where you like it the most
 - 🔹 **Accurate calculations** for **EXP gain & time remaining** for level-ups.
 - 🔹 Hides automatically **after 17 seconds** of not attacking(Configurable).
 - 🔹 Seamlessly integrates with the **Mu Online game client and server**.
