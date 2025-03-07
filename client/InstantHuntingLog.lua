@@ -1,6 +1,5 @@
 --------------------------------------------------------------------------------
 -- InstantHuntingLog.lua
--- Main Hunting Log script that references huntingLogConfigs.lua for all
 -- visual/layout configuration values.
 --------------------------------------------------------------------------------
 
