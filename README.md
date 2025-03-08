@@ -21,10 +21,10 @@ A real-time experience tracking system for **Mu Online Season 6** that displays 
 - 🔹When farming master level exp timers for next level and max level are not available
 
 ## 📷 Images
-![Hunting Log UI](assets/images/hunting_log_ui_1.jpg)
-![Hunting Log UI Minimized](assets/images/hunting_log_ui_2.jpg)
-![EXP Tracking](assets/images/hunting_log_ui_mini.png)
+![Hunting Log UI](assets/images/hunting_log_mini.png)
 
+## 📷 Video
+[![Watch the video](https://i.ibb.co/LXHs67FP/hunting-log-ui-1.jpg)](https://youtu.be/fTUtRtwnkMw)
 
 ## Configurations Available
 

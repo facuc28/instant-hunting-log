@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- InstantHuntingLog.lua
--- Client side script for the Hunting Log UI, now shows Zen per minute stats.
+-- Client side script for the Hunting Log UI, with a custom stylized header.
 --------------------------------------------------------------------------------
 
 local HuntingLogConfigs = {}
@@ -9,14 +9,12 @@ local HuntingLogConfigs = {}
 HuntingLogConfigs.panelX       = 850
 HuntingLogConfigs.panelY       = 420
 HuntingLogConfigs.boxWidth     = 165
--- Increased to accommodate new lines for Zen stats
-HuntingLogConfigs.boxHeight    = 165
-HuntingLogConfigs.headerHeight = 20
+HuntingLogConfigs.boxHeight    = 165  -- Height for main panel
+HuntingLogConfigs.headerHeight = 20   -- Height of the custom header bar
 
 -- [Colors (RGBA)]
 HuntingLogConfigs.panelBgColor     = {0.0, 0.0, 0.0, 0.8}
 HuntingLogConfigs.panelBorderColor = {0.3, 0.2, 0.2, 1.0}
-HuntingLogConfigs.titleColor       = {255, 215, 0, 255}
 HuntingLogConfigs.labelColor       = {230, 230, 230, 255}
 HuntingLogConfigs.valueColor       = {255, 165, 0, 255}
 
@@ -35,26 +33,26 @@ HuntingLog = {}
 -------------------------------------------------------------------------------
 -- Internal state variables
 -------------------------------------------------------------------------------
-local expPerMinute         = 0
-local lastExpReceived      = 0
-local levelUpCount         = 0
-local sessionStartTime     = 0
-local nextLevelIn          = "00:00:00"
-local resetLevelIn         = "00:00:00"
-local maxLevelIn           = "00:00:00"
-local sessionTime          = "00:00:00"
-local lastPacketTime       = 0
-local isHuntingLogVisible  = false
-local isMinimized          = false
+local expPerMinute        = 0
+local lastExpReceived     = 0
+local levelUpCount        = 0
+local sessionStartTime    = 0
+local nextLevelIn         = "00:00:00"
+local resetLevelIn        = "00:00:00"
+local maxLevelIn          = "00:00:00"
+local sessionTime         = "00:00:00"
+local lastPacketTime      = 0
+local isHuntingLogVisible = false
+local isMinimized         = false
 
--- NEW: Zen stats
-local zenPerMinute         = 0
-local lastZenReceived      = 0
+-- Zen stats
+local zenPerMinute        = 0
+local lastZenReceived     = 0
 
 -- Drag variables
-local isDragging           = false
-local dragOffsetX          = 0
-local dragOffsetY          = 0
+local isDragging          = false
+local dragOffsetX         = 0
+local dragOffsetY         = 0
 
 -------------------------------------------------------------------------------
 -- RENDER
@@ -66,9 +64,9 @@ function HuntingLog.Render()
 
     local posX = HuntingLogConfigs.panelX
     local posY = HuntingLogConfigs.panelY
-
     local currentHeight = isMinimized and HuntingLogConfigs.headerHeight or HuntingLogConfigs.boxHeight
 
+    -- Draw the main panel background with NO title (we'll do a custom header)
     UIFramework.CreatePanel(
         posX,
         posY,
@@ -78,8 +76,8 @@ function HuntingLog.Render()
         HuntingLogConfigs.panelBorderColor,
         HuntingLogConfigs.titleText
     )
-
-    -- Toggle button
+    
+    -- Draw the toggle button on the right side of the header
     local buttonWidth = math.floor(HuntingLogConfigs.boxWidth * 0.3)
     local buttonX     = posX + HuntingLogConfigs.boxWidth - buttonWidth
     local buttonY     = posY
@@ -95,14 +93,16 @@ function HuntingLog.Render()
         HuntingLogConfigs.panelBorderColor
     )
 
+    -- If minimized, skip drawing the stats
     if isMinimized then
         return
     end
 
+    -- Draw all stats below the header
     local lineHeight  = HuntingLogConfigs.lineHeight
     local contentPosY = posY + HuntingLogConfigs.headerHeight + lineHeight
 
-    -- Hunting Time
+    -- Calculate "Hunting Time"
     local sessionElapsedTime = os.time() - sessionStartTime
     local sessionHours       = math.floor(sessionElapsedTime / 3600)
     local sessionMinutes     = math.floor((sessionElapsedTime % 3600) / 60)
@@ -112,7 +112,7 @@ function HuntingLog.Render()
     UIFramework.CreateTextLabel(posX + 10, contentPosY, "Hunting Time:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 100, contentPosY, sessionTime, HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Empty Line
+    -- Empty line for spacing
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight, " ", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
 
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 2, "Exp. per minute:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
@@ -133,7 +133,7 @@ function HuntingLog.Render()
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 7, "Max level(400) in:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
     UIFramework.CreateTextLabel(posX + 100, contentPosY + lineHeight * 7, maxLevelIn, HuntingLogConfigs.valueColor, HuntingLogConfigs.defaultFontType, ALIGN_RIGHT)
 
-    -- Empty Line
+    -- Another spacing line
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 8, " ", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
 
     UIFramework.CreateTextLabel(posX + 10, contentPosY + lineHeight * 9, "Zen per minute:", HuntingLogConfigs.labelColor, HuntingLogConfigs.defaultFontType)
@@ -148,7 +148,6 @@ end
 -------------------------------------------------------------------------------
 function HuntingLog.Update(Packet, PacketName)
     if Packet == HUNTING_LOG_PACKET then
-        -- Offsets match the server script
         expPerMinute         = GetDwordPacket(PacketName, 0) or 0
         local lastGainedExp  = GetDwordPacket(PacketName, 4) or 0
         levelUpCount         = GetDwordPacket(PacketName, 8) or 0
@@ -159,8 +158,8 @@ function HuntingLog.Update(Packet, PacketName)
 
         sessionStartTime     = GetDwordPacket(PacketName, 24) or 0
         zenPerMinute         = GetDwordPacket(PacketName, 28) or 0
-        local lastZen      = GetDwordPacket(PacketName, 32) or 0
-        lastZenReceived = (lastZen >  0 ) and lastZen or lastZenReceived
+        local lastZen        = GetDwordPacket(PacketName, 32) or 0
+        lastZenReceived      = (lastZen > 0) and lastZen or lastZenReceived
         lastExpReceived      = (lastGainedExp > 0) and lastGainedExp or lastExpReceived
 
         local days    = math.floor(nextLevelTimeRaw / 86400)
