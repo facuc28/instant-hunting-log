@@ -163,19 +163,19 @@ function HuntingLog.Update(Packet, PacketName)
         lastExpReceived      = (lastGainedExp > 0) and lastGainedExp or lastExpReceived
 
         local days    = math.floor(nextLevelTimeRaw / 86400)
-        local hours   = math.floor(nextLevelTimeRaw / 3600)
+        local hours   = math.floor((nextLevelTimeRaw % 86400) / 3600)
         local minutes = math.floor((nextLevelTimeRaw % 3600) / 60)
         local seconds = nextLevelTimeRaw % 60
         nextLevelIn   = string.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)
 
         local maxDays    = math.floor(maxLevelTimeRaw / 86400)
-        local maxHours   = math.floor(maxLevelTimeRaw / 3600)
+        local maxHours   = math.floor((maxLevelTimeRaw % 86400) / 3600)
         local maxMinutes = math.floor((maxLevelTimeRaw % 3600) / 60)
         local maxSeconds = maxLevelTimeRaw % 60
         maxLevelIn       = string.format("%02d:%02d:%02d:%02d", maxDays, maxHours, maxMinutes, maxSeconds)
 
         local resetDays    = math.floor(resetLevelTimeRaw / 86400)
-        local resetHours   = math.floor(resetLevelTimeRaw / 3600)
+        local resetHours   = math.floor((resetLevelTimeRaw % 86400) / 3600)
         local resetMinutes = math.floor((resetLevelTimeRaw % 3600) / 60)
         local resetSeconds = resetLevelTimeRaw % 60
         resetLevelIn       = string.format("%02d:%02d:%02d:%02d", resetDays, resetHours, resetMinutes, resetSeconds)
